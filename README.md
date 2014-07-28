@@ -1,14 +1,14 @@
 BookWorm
 ========
 
-Downloads the Worm web serial by Wildbow, and exports as a single html file.
+Downloads the Wildbow's currently released web serials, Worm and Pact, and outputs them as large HTML files.
 
 Prerequisites
 ------
 
 Python 3,
-BeautifulSoup4
+[BeautifulSoup4](http://www.crummy.com/software/BeautifulSoup/#Download)
 
 Known Issues
 -----
-Doesn't finish executing cleanly, or add the html closer to the output file. It does download every chapter though.
+None
