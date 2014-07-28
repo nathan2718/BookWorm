@@ -25,6 +25,8 @@ def downloadPage(url):
 	#Store the url to the next chapter
 	if soup.find(is_a_next_link) is not None:
 		nextLnk = urllib.parse.quote_plus(soup.find(is_a_next_link)["href"], safe='/:')
+	else:
+		nextLnk = ''
 	#Get rid of the pesky Next Chapter Links
 	if soup.find_all("a", text="Next Chapter") != None:
 		for i in soup.find_all("a", text="Next Chapter"):
@@ -48,7 +50,7 @@ def downloadPage(url):
 	#Increment Chapter count
 	chap_count += 1
 	#Calls the function on the next chapter url
-	if nextLnk != None:
+	if nextLnk != '':
 		downloadPage(nextLnk)
 
 chap_count = 0
