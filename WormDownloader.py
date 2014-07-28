@@ -35,6 +35,10 @@ def downloadPage(url):
 	if soup.find_all("a", text="Last Chapter") != None:
 		for i in soup.find_all("a", text="Last Chapter"):
 			i.decompose()
+	#Get rid of the end link
+	if soup.find_all("a", text="End") != None:
+		for i in soup.find_all("a", text="End")
+			i.decompose()
 	#Get rid of the pesky share stuff
 	if soup.find_all("div", id="jp-post-flair") != None:
 		for i in soup.find_all("div", id="jp-post-flair"):
