@@ -7,6 +7,11 @@ import urllib.request
 import urllib.parse
 import shutil
 import os
+import os.path
+
+pageTitle = "Pact"
+outFile = "Pact.html"
+firstLnk = "http://pactwebserial.wordpress.com/2013/12/17/bonds-1-1/"
 
 #Returns true if the tag is a next link
 def is_a_next_link(tag):
@@ -25,6 +30,8 @@ def downloadPage(url):
 	#Store the url to the next chapter
 	if soup.find(is_a_next_link) is not None:
 		nextLnk = urllib.parse.quote_plus(soup.find(is_a_next_link)["href"], safe='/:')
+	else:
+		nextLnk = ''
 	#Get rid of the pesky Next Chapter Links
 	if soup.find_all("a", text="Next Chapter") != None:
 		for i in soup.find_all("a", text="Next Chapter"):
@@ -33,12 +40,16 @@ def downloadPage(url):
 	if soup.find_all("a", text="Last Chapter") != None:
 		for i in soup.find_all("a", text="Last Chapter"):
 			i.decompose()
+	#Get rid of the end link
+	if soup.find_all("a", text="End") != None:
+		for i in soup.find_all("a", text="End"):
+			i.decompose()
 	#Get rid of the pesky share stuff
 	if soup.find_all("div", id="jp-post-flair") != None:
 		for i in soup.find_all("div", id="jp-post-flair"):
 			i.decompose()
 	#Append each chapter to the output file
-	with open("Pact.html", 'a', encoding="utf8") as output:
+	with open(outFile, 'a', encoding="utf8") as output:
 		#Write chapter title
 		output.write(soup.find("h1", "entry-title").prettify(formatter="html"))
 		#Write chapter content
@@ -48,15 +59,19 @@ def downloadPage(url):
 	#Increment Chapter count
 	chap_count += 1
 	#Calls the function on the next chapter url
-	if nextLnk != None:
+	if nextLnk != '':
 		downloadPage(nextLnk)
 
 chap_count = 0
+
+if os.path.isfile(outFile):
+	os.remove(outFile)
+
 #Write the html opening
-with open("Pact.html", 'a', encoding="utf8") as output:
-	output.write("<html><head><title>Pact</title></head><body>")
+with open(outFile, 'a', encoding="utf8") as output:
+	output.write("<html><head><title>pageTitle</title></head><body>")
 #Call the function on the first chapter
-downloadPage("http://pactwebserial.wordpress.com/2013/12/17/bonds-1-1/")
+downloadPage(firstLnk)
 #Write the html closing
-with open("Pact.html", 'a', encoding="utf8") as output:
+with open(outFile, 'a', encoding="utf8") as output:
 	output.write("</body></html>")
