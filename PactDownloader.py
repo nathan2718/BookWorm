@@ -8,6 +8,7 @@ import urllib.parse
 import shutil
 import os
 import os.path
+import time
 
 pageTitle = "Pact"
 outFile = "Pact.html"
@@ -20,11 +21,15 @@ def is_a_next_link(tag):
 #Recursive Function, downloads each page then calls itself on the next one
 def downloadPage(url):
 	global chap_count
-	print("Starting " + str(chap_count))
+	print("{0:3}".format(str(chap_count)), " ", end="")
+	downTime = time.time()
 	#Save the url to a file
 	file_name = str(chap_count) + ".html"
 	with urllib.request.urlopen(url) as response, open(file_name, 'wb') as out_file:
 		shutil.copyfileobj(response, out_file)
+	totalDownTime = str(time.time() - downTime)
+
+	procTime = time.time()
 	#Open the file with Beautiful Soup
 	soup = BeautifulSoup(open(file_name, encoding="utf8"))
 	#Store the url to the next chapter
@@ -39,14 +44,14 @@ def downloadPage(url):
 	#Get rid of the pesky Last Chapter Links
 	if soup.find_all("a", text="Last Chapter") != None:
 		for i in soup.find_all("a", text="Last Chapter"):
+			i.decompose() 
+	#Get rid of the pesky share stuff
+	if soup.find_all("div", id="jp-post-flair") != None:
+		for i in soup.find_all("div", id="jp-post-flair"):
 			i.decompose()
 	#Get rid of the end link
 	if soup.find_all("a", text="End") != None:
 		for i in soup.find_all("a", text="End"):
-			i.decompose()
-	#Get rid of the pesky share stuff
-	if soup.find_all("div", id="jp-post-flair") != None:
-		for i in soup.find_all("div", id="jp-post-flair"):
 			i.decompose()
 	#Append each chapter to the output file
 	with open(outFile, 'a', encoding="utf8") as output:
@@ -58,8 +63,13 @@ def downloadPage(url):
 	os.remove(file_name)
 	#Increment Chapter count
 	chap_count += 1
+	#"{0:>40}".format
+	print("{0:>35}".format(soup.find("h1", "entry-title").get_text().encode('ascii', 'replace').decode('utf8', "ignore")), " ", end="")
+	print("{:.5}".format(totalDownTime), " sec.", " ", end="")
+	print("{:.5}".format(str(time.time() - procTime)), " sec.")
+
 	#Calls the function on the next chapter url
-	if nextLnk != '':
+	if nextLnk is not '':
 		downloadPage(nextLnk)
 
 chap_count = 0
