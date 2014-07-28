@@ -7,6 +7,11 @@ import urllib.request
 import urllib.parse
 import shutil
 import os
+import os.path
+
+pageTitle = "Worm"
+outFile = "Worm.html"
+firstLnk = "http://parahumans.wordpress.com/category/stories-arcs-1-10/arc-1-gestation/1-01/"
 
 #Returns true if the tag is a next link
 def is_a_next_link(tag):
@@ -37,14 +42,14 @@ def downloadPage(url):
 			i.decompose()
 	#Get rid of the end link
 	if soup.find_all("a", text="End") != None:
-		for i in soup.find_all("a", text="End")
+		for i in soup.find_all("a", text="End"):
 			i.decompose()
 	#Get rid of the pesky share stuff
 	if soup.find_all("div", id="jp-post-flair") != None:
 		for i in soup.find_all("div", id="jp-post-flair"):
 			i.decompose()
 	#Append each chapter to the output file
-	with open("Worm.html", 'a', encoding="utf8") as output:
+	with open(outFile, 'a', encoding="utf8") as output:
 		#Write chapter title
 		output.write(soup.find("h1", "entry-title").prettify(formatter="html"))
 		#Write chapter content
@@ -58,11 +63,15 @@ def downloadPage(url):
 		downloadPage(nextLnk)
 
 chap_count = 0
+
+if os.path.isfile(outFile):
+	os.remove(outFile)
+
 #Write the html opening
-with open("Worm.html", 'a', encoding="utf8") as output:
-	output.write("<html><head><title>Worm</title></head><body>")
+with open(outFile, 'a', encoding="utf8") as output:
+	output.write("<html><head><title>pageTitle</title></head><body>")
 #Call the function on the first chapter
-downloadPage("http://parahumans.wordpress.com/category/stories-arcs-1-10/arc-1-gestation/1-01/")
+downloadPage(firstLnk)
 #Write the html closing
-with open("Worm.html", 'a', encoding="utf8") as output:
+with open(outFile, 'a', encoding="utf8") as output:
 	output.write("</body></html>")
