@@ -12,3 +12,8 @@ Python 3,
 Known Issues
 -----
 None
+
+Usage
+-----
+
+```python3 BookWorm.py [Pact|Worm]```

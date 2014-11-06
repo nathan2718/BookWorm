@@ -9,10 +9,11 @@ import shutil
 import os
 import os.path
 import time
+import sys
 
-pageTitle = "Pact"
-outFile = "Pact.html"
-firstLnk = "http://pactwebserial.wordpress.com/2013/12/17/bonds-1-1/"
+pageTitle = "Worm"
+outFile = "Worm.html"
+firstLnk = "http://parahumans.wordpress.com/category/stories-arcs-1-10/arc-1-gestation/1-01/"
 
 #Returns true if the tag is a next link
 def is_a_next_link(tag):
@@ -20,8 +21,6 @@ def is_a_next_link(tag):
 
 #Recursive Function, downloads each page then calls itself on the next one
 def downloadPage(url, chap_count):
-        # global chap_count
-
         downTime = time.time()
         #Save the url to a file
         file_name = str(chap_count) + ".html"
@@ -71,14 +70,28 @@ def downloadPage(url, chap_count):
                 downloadPage(nextLnk, chap_count)
 
 
-if os.path.isfile(outFile):
-        os.remove(outFile)
+def download():
+    if os.path.isfile(outFile):
+            os.remove(outFile)
 
-#Write the html opening
-with open(outFile, 'a', encoding="utf8") as output:
-        output.write("<html><head><title>" + pageTitle + "</title></head><body>")
-#Call the function on the first chapter
-downloadPage(firstLnk, 0)
-#Write the html closing
-with open(outFile, 'a', encoding="utf8") as output:
-        output.write("</body></html>")
+    #Write the html opening
+    with open(outFile, 'a', encoding="utf8") as output:
+            output.write("<html><head><title>" + pageTitle + "</title></head><body>")
+    #Call the function on the first chapter
+    downloadPage(firstLnk, 0)
+    #Write the html closing
+    with open(outFile, 'a', encoding="utf8") as output:
+            output.write("</body></html>")
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1 and sys.argv[1] == "Pact":
+        pageTitle = "Pact"
+        outFile = "Pact.html"
+        firstLnk = "http://pactwebserial.wordpress.com/2013/12/17/bonds-1-1/"
+    if len(sys.argv) > 1 and sys.argv[1] == "Worm":
+        pageTitle = "Worm"
+        outFile = "Worm.html"
+        firstLnk = "http://parahumans.wordpress.com/category/stories-arcs-1-10/arc-1-gestation/1-01/"
+
+
+    download()
